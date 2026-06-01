@@ -1,0 +1,17 @@
+{
+  "storage_dir": ".camera-mcp/frames",
+  "cameras": [
+    {
+      "id": "printer-cam",
+      "name": "Printer Camera",
+      "type": "snapshot_url",
+      "url": "http://octopi.local/webcam/?action=snapshot"
+    },
+    {
+      "id": "fixture",
+      "name": "Fixture Image",
+      "type": "file",
+      "path": "examples/fixture.jpg"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-camera-watch"
+version = "0.1.0"
+description = "Local-first MCP server for camera watch instructions and visual condition alerts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Steve Villari" },
+  { name = "Villocity Labs" }
+]
+keywords = ["mcp", "camera", "monitoring", "vision", "alerts", "3d-printer"]
+
+[project.scripts]
+mcp-camera-watch = "mcp_camera.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
