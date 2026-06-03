@@ -9,6 +9,7 @@ MCP Camera Watch was built by Steve Villari and Villocity Labs.
 Start with a running OpenClaw/Clawbot gateway, then run this from the repository root:
 
 ```bash
+export OPENAI_API_KEY="your-openai-api-key"
 scripts/install_openclaw_e2e.sh --restart-gateway
 ```
 
@@ -18,10 +19,17 @@ The command performs the full tester path:
 - Runs [scripts/smoke_mcp.sh](scripts/smoke_mcp.sh) and asserts that MCP `initialize` returns `serverInfo.name: "mcp-camera-watch"` and that the camera tools are present.
 - Detects `openclaw`, verifies the gateway is reachable, and chooses the safest registration mode.
 - In default `auto` mode, registers the standard MCP stdio server with `openclaw mcp set mcp-camera-watch ...` when the name is unused or already matches this checkout.
+- If `OPENAI_API_KEY` is set when you run the installer, the generated OpenClaw MCP server entry includes that key in the server environment so the daemon can use the vision evaluator.
 - Stops before replacing a different existing `mcp-camera-watch` server. Use `--force` only when you intentionally want this checkout to replace the existing entry.
 - With `--restart-gateway`, asks OpenClaw to restart safely after registration and verifies the gateway is reachable again.
 
 The smoke test does not capture a camera frame or call an external vision service. It verifies install, MCP protocol startup, tool discovery, OpenClaw detection, and OpenClaw registration.
+
+If you previously registered MCP Camera Watch before setting `OPENAI_API_KEY`, rerun:
+
+```bash
+scripts/install_openclaw_e2e.sh --force --restart-gateway
+```
 
 After the command passes, ask Clawbot/OpenClaw:
 
@@ -33,6 +41,20 @@ Then, after confirming your `cameras.json` points at a reachable camera or local
 
 ```text
 Describe what printer-cam sees.
+```
+
+Useful printer-camera prompts:
+
+```text
+Look at printer-cam and tell me what color filament is visible.
+```
+
+```text
+Check printer-cam and tell me if the print looks detached, spaghetti-like, shifted, or otherwise messed up.
+```
+
+```text
+Watch printer-cam and alert me if the print starts looking detached, spaghetti-like, shifted, or messy.
 ```
 
 If your OpenClaw install uses a named profile, add:
@@ -59,10 +81,23 @@ Generate a local config:
 .venv/bin/mcp-camera-watch --init-config --config ./cameras.json
 ```
 
-Edit `cameras.json` with your camera details. Supported `type` values:
+Edit `cameras.json` with your camera details and evaluator settings. Supported `type` values:
 
 - `snapshot_url`
 - `file`
+
+The default evaluator config uses OpenAI:
+
+```json
+{
+  "evaluator": {
+    "provider": "openai",
+    "model": "gpt-4.1-mini",
+    "api_key_env": "OPENAI_API_KEY",
+    "detail": "low"
+  }
+}
+```
 
 Run the local smoke test:
 
@@ -89,4 +124,4 @@ Restart Clawbot/OpenClaw after adding the server if your setup does not hot-relo
 - If Clawbot says the server is missing, verify the absolute `command` path in `openclaw mcp show mcp-camera-watch --json`.
 - If a snapshot URL fails, open the configured `url` in a browser from the same machine.
 - If a file camera fails, verify the configured `path` exists.
-- If descriptions or evaluations say no vision evaluator is configured, that is expected in this starter version.
+- If descriptions or evaluations say `OPENAI_API_KEY` is not set, export it and rerun `scripts/install_openclaw_e2e.sh --force --restart-gateway`.

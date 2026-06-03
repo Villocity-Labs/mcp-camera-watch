@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from .capture import CaptureService
 from .config import AppConfig, CameraConfig
-from .evaluator import PlaceholderEvaluator
+from .evaluator import build_evaluator
 
 JsonObject = dict[str, Any]
 
@@ -32,7 +32,7 @@ class CameraMcpServer:
         self.config = config
         self.cameras = {camera.id: camera for camera in config.cameras}
         self.capture = CaptureService(config.storage_dir)
-        self.evaluator = PlaceholderEvaluator()
+        self.evaluator = build_evaluator(config.evaluator)
         self.watches: dict[str, Watch] = {}
         self.tools: dict[str, Callable[[JsonObject], Any]] = {
             "camera_list": self.camera_list,
@@ -107,17 +107,23 @@ class CameraMcpServer:
     def camera_describe(self, args: JsonObject) -> JsonObject:
         camera = self.camera(args)
         snapshot = self.capture.snapshot(camera)
+        prompt = str(args.get("prompt") or "Describe what is visible in this camera frame.")
+        if isinstance(args.get("roi"), dict):
+            prompt = f"{prompt}\nFocus region hint: {json.dumps(args['roi'])}"
         return self.evaluator.describe(
             frame_path=snapshot["frame_path"],
-            prompt=str(args.get("prompt") or "Describe what is visible in this camera frame."),
+            prompt=prompt,
             detail=str(args.get("detail") or "normal"),
         )
 
     def camera_evaluate_once(self, args: JsonObject) -> JsonObject:
         camera = self.camera(args)
         snapshot = self.capture.snapshot(camera)
+        instruction = required(args, "instruction")
+        if isinstance(args.get("roi"), dict):
+            instruction = f"{instruction}\nFocus region hint: {json.dumps(args['roi'])}"
         return self.evaluator.evaluate(
-            instruction=required(args, "instruction"),
+            instruction=instruction,
             frame_path=snapshot["frame_path"],
             threshold=float(args.get("confidence_threshold", 0.8)),
         )

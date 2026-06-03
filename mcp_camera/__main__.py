@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -51,11 +52,16 @@ def clawbot_config(config_path: Path) -> dict[str, object]:
     if not venv_bin.exists():
         args = ["-m", "mcp_camera", *args]
 
-    return {
+    server_config: dict[str, object] = {
         "command": command,
         "args": args,
         "cwd": str(project_root),
     }
+
+    if os.environ.get("OPENAI_API_KEY"):
+        server_config["env"] = {"OPENAI_API_KEY": os.environ["OPENAI_API_KEY"]}
+
+    return server_config
 
 
 if __name__ == "__main__":

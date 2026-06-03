@@ -1,5 +1,11 @@
 {
   "storage_dir": ".camera-mcp/frames",
+  "evaluator": {
+    "provider": "openai",
+    "model": "gpt-4.1-mini",
+    "api_key_env": "OPENAI_API_KEY",
+    "detail": "low"
+  },
   "cameras": [
     {
       "id": "printer-cam",

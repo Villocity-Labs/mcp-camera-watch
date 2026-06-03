@@ -24,6 +24,7 @@ This starter project includes:
 - Snapshot capture from:
   - HTTP snapshot URL
   - Local image file
+- OpenAI vision evaluation through the Responses API when `OPENAI_API_KEY` is configured
 - Tool definitions for:
   - `camera_list`
   - `camera_snapshot`
@@ -34,10 +35,9 @@ This starter project includes:
   - `camera_watch_stop`
   - `camera_watch_status`
   - `camera_alerts_list`
-- A placeholder evaluator interface
 - Tests using only the Python standard library
 
-The starter intentionally does not claim visual intelligence yet. The first real evaluator should plug into `mcp_camera/evaluator.py`.
+If no OpenAI API key is available, the evaluator returns a clear setup message instead of crashing.
 
 ## Description Tool
 
@@ -77,6 +77,12 @@ Edit the generated `cameras.json` file with your camera source, then run:
 scripts/smoke_mcp.sh
 ```
 
+To enable real visual descriptions and condition checks, set your OpenAI API key before registering with OpenClaw:
+
+```bash
+export OPENAI_API_KEY="your-openai-api-key"
+```
+
 For a running OpenClaw/Clawbot setup, the one-command tester path is:
 
 ```bash
@@ -85,10 +91,26 @@ scripts/install_openclaw_e2e.sh --restart-gateway
 
 That command reuses [scripts/install_local.sh](scripts/install_local.sh) and [scripts/smoke_mcp.sh](scripts/smoke_mcp.sh), detects the OpenClaw CLI and running gateway, registers `mcp-camera-watch` when the name is unused or already matches this checkout, and verifies the saved OpenClaw registration. It stops before replacing a different existing `mcp-camera-watch` entry unless you pass `--force`.
 
+If you previously registered the server before setting `OPENAI_API_KEY`, rerun with `--force --restart-gateway` so OpenClaw picks up the key in the MCP server environment.
+
 After it passes, ask OpenClaw/Clawbot:
 
 ```text
 List my configured cameras.
+```
+
+Then try:
+
+```text
+Describe what printer-cam sees right now.
+```
+
+```text
+Look at printer-cam and tell me what color filament is visible.
+```
+
+```text
+Watch printer-cam and alert me if the print looks detached, spaghetti-like, shifted, or otherwise messed up.
 ```
 
 For the detailed happy path, see [DEPLOY.md](DEPLOY.md).
@@ -98,6 +120,12 @@ For the detailed happy path, see [DEPLOY.md](DEPLOY.md).
 ```json
 {
   "storage_dir": ".camera-mcp/frames",
+  "evaluator": {
+    "provider": "openai",
+    "model": "gpt-4.1-mini",
+    "api_key_env": "OPENAI_API_KEY",
+    "detail": "low"
+  },
   "cameras": [
     {
       "id": "printer-cam",
