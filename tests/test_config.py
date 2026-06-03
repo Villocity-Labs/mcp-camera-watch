@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest import TestCase
 
+from mcp_camera.__main__ import clawbot_config
 from mcp_camera.config import load_config
 
 
@@ -47,6 +48,17 @@ class ConfigTests(TestCase):
 
         with self.assertRaisesRegex(ValueError, "Unsupported camera type"):
             load_config(config)
+
+    def test_clawbot_config_points_at_camera_config(self) -> None:
+        config = Path(self.create_temp_file())
+
+        server_config = clawbot_config(config)
+
+        command = str(server_config["command"])
+        args = server_config["args"]
+        self.assertTrue("mcp-camera-watch" in command or args[:2] == ["-m", "mcp_camera"])
+        self.assertIn(str(config.resolve()), server_config["args"])
+        self.assertIn("cwd", server_config)
 
     def create_temp_file(self) -> str:
         import tempfile

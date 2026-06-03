@@ -68,10 +68,30 @@ Example output shape:
 ## Quick Start
 
 ```bash
-python3 -m mcp_camera --init-config
-python3 -m unittest discover -s tests
-python3 -m mcp_camera --config ./cameras.json
+scripts/install_local.sh
 ```
+
+Edit the generated `cameras.json` file with your camera source, then run:
+
+```bash
+scripts/smoke_mcp.sh
+```
+
+For a running OpenClaw/Clawbot setup, the one-command tester path is:
+
+```bash
+scripts/install_openclaw_e2e.sh --restart-gateway
+```
+
+That command reuses [scripts/install_local.sh](scripts/install_local.sh) and [scripts/smoke_mcp.sh](scripts/smoke_mcp.sh), detects the OpenClaw CLI and running gateway, registers `mcp-camera-watch` when the name is unused or already matches this checkout, and verifies the saved OpenClaw registration. It stops before replacing a different existing `mcp-camera-watch` entry unless you pass `--force`.
+
+After it passes, ask OpenClaw/Clawbot:
+
+```text
+List my configured cameras.
+```
+
+For the detailed happy path, see [DEPLOY.md](DEPLOY.md).
 
 ## Example Config
 

@@ -7,3 +7,4 @@ dist/
 *.egg-info/
 cameras.json
 .camera-mcp/
+clawbot-mcp-camera-watch.server.json

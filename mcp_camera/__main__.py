@@ -13,6 +13,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="MCP server for camera watch instructions.")
     parser.add_argument("--config", default="cameras.json", help="Path to camera config JSON.")
     parser.add_argument("--init-config", action="store_true", help="Create an example config and exit.")
+    parser.add_argument("--print-clawbot-config", action="store_true", help="Print a Clawbot/OpenClaw MCP server entry.")
     parser.add_argument("--version", action="store_true", help="Print version metadata and exit.")
     args = parser.parse_args()
 
@@ -26,6 +27,10 @@ def main() -> int:
         print(f"Wrote {config_path}")
         return 0
 
+    if args.print_clawbot_config:
+        print(json.dumps(clawbot_config(config_path), indent=2))
+        return 0
+
     if not config_path.exists():
         write_default_config(config_path)
         print(
@@ -35,6 +40,22 @@ def main() -> int:
 
     CameraMcpServer(load_config(config_path)).run()
     return 0
+
+
+def clawbot_config(config_path: Path) -> dict[str, object]:
+    project_root = Path(__file__).resolve().parent.parent
+    venv_bin = project_root / ".venv" / "bin" / "mcp-camera-watch"
+    command = str(venv_bin if venv_bin.exists() else Path(sys.executable))
+    args = ["--config", str(config_path.resolve())]
+
+    if not venv_bin.exists():
+        args = ["-m", "mcp_camera", *args]
+
+    return {
+        "command": command,
+        "args": args,
+        "cwd": str(project_root),
+    }
 
 
 if __name__ == "__main__":
