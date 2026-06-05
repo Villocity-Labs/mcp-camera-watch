@@ -32,6 +32,7 @@ class CameraConfig:
     type: str
     url: str | None = None
     path: str | None = None
+    device_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -76,7 +77,7 @@ def _parse_camera(item: Any) -> CameraConfig:
     camera_type = str(item.get("type", "")).lower()
     if not camera_id:
         raise ValueError("Camera config is missing required field: id")
-    if camera_type not in {"snapshot_url", "file"}:
+    if camera_type not in {"snapshot_url", "file", "macos_camera"}:
         raise ValueError(f"Unsupported camera type: {camera_type}")
     if camera_type == "snapshot_url" and not item.get("url"):
         raise ValueError("snapshot_url camera requires url")
@@ -89,6 +90,7 @@ def _parse_camera(item: Any) -> CameraConfig:
         type=camera_type,
         url=str(item["url"]) if item.get("url") else None,
         path=str(item["path"]) if item.get("path") else None,
+        device_name=str(item["device_name"]) if item.get("device_name") else None,
     )
 
 

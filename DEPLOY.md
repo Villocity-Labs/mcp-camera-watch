@@ -25,6 +25,33 @@ The command performs the full tester path:
 
 The smoke test does not capture a camera frame or call an external vision service. It verifies install, MCP protocol startup, tool discovery, OpenClaw detection, and OpenClaw registration.
 
+On macOS, the installer also compiles a native camera capture helper at `.camera-mcp/bin/capture-macos-camera`. To use the built-in laptop camera, add this entry to `cameras.json` before running the happy-path command:
+
+```json
+{
+  "id": "laptop-camera",
+  "name": "Laptop Camera",
+  "type": "macos_camera",
+  "device_name": "FaceTime HD Camera"
+}
+```
+
+List the exact camera names available on the Mac with:
+
+```bash
+.camera-mcp/bin/capture-macos-camera --list
+```
+
+The first live snapshot may display a macOS Camera permission prompt. Allow access for the process running MCP Camera Watch, then ask OpenClaw:
+
+```text
+Take a snapshot from laptop-camera.
+```
+
+```text
+Describe what laptop-camera sees right now.
+```
+
 If you previously registered MCP Camera Watch before setting `OPENAI_API_KEY`, rerun:
 
 ```bash
@@ -85,6 +112,7 @@ Edit `cameras.json` with your camera details and evaluator settings. Supported `
 
 - `snapshot_url`
 - `file`
+- `macos_camera` on macOS; optionally set `device_name` to choose a specific camera
 
 The default evaluator config uses OpenAI:
 
@@ -124,4 +152,5 @@ Restart Clawbot/OpenClaw after adding the server if your setup does not hot-relo
 - If Clawbot says the server is missing, verify the absolute `command` path in `openclaw mcp show mcp-camera-watch --json`.
 - If a snapshot URL fails, open the configured `url` in a browser from the same machine.
 - If a file camera fails, verify the configured `path` exists.
+- If a macOS camera fails, rerun `scripts/install_local.sh`, verify its name with `.camera-mcp/bin/capture-macos-camera --list`, and allow Camera access in System Settings > Privacy & Security > Camera.
 - If descriptions or evaluations say `OPENAI_API_KEY` is not set, export it and rerun `scripts/install_openclaw_e2e.sh --force --restart-gateway`.

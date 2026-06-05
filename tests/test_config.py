@@ -50,6 +50,28 @@ class ConfigTests(TestCase):
         with self.assertRaisesRegex(ValueError, "Unsupported camera type"):
             load_config(config)
 
+    def test_load_config_parses_macos_camera(self) -> None:
+        config = Path(self.create_temp_file())
+        config.write_text(
+            """
+            {
+              "cameras": [
+                {
+                  "id": "laptop-camera",
+                  "type": "macos_camera",
+                  "device_name": "FaceTime HD Camera"
+                }
+              ]
+            }
+            """,
+            encoding="utf-8",
+        )
+
+        app_config = load_config(config)
+
+        self.assertEqual(app_config.cameras[0].type, "macos_camera")
+        self.assertEqual(app_config.cameras[0].device_name, "FaceTime HD Camera")
+
     def test_load_config_parses_openai_evaluator(self) -> None:
         config = Path(self.create_temp_file())
         config.write_text(

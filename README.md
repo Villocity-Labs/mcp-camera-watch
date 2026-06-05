@@ -24,6 +24,7 @@ This starter project includes:
 - Snapshot capture from:
   - HTTP snapshot URL
   - Local image file
+  - Built-in or attached macOS camera
 - OpenAI vision evaluation through the Responses API when `OPENAI_API_KEY` is configured
 - Tool definitions for:
   - `camera_list`
@@ -77,6 +78,23 @@ Edit the generated `cameras.json` file with your camera source, then run:
 scripts/smoke_mcp.sh
 ```
 
+On macOS, `scripts/install_local.sh` also builds the native laptop-camera capture helper. Add a camera like this to `cameras.json`:
+
+```json
+{
+  "id": "laptop-camera",
+  "name": "Laptop Camera",
+  "type": "macos_camera",
+  "device_name": "FaceTime HD Camera"
+}
+```
+
+On first capture, allow camera access when macOS asks. To see the exact camera names available on the Mac:
+
+```bash
+.camera-mcp/bin/capture-macos-camera --list
+```
+
 To enable real visual descriptions and condition checks, set your OpenAI API key before registering with OpenClaw:
 
 ```bash
@@ -103,6 +121,16 @@ Then try:
 
 ```text
 Describe what printer-cam sees right now.
+```
+
+For the built-in Mac camera, try:
+
+```text
+Take a snapshot from laptop-camera.
+```
+
+```text
+Describe what laptop-camera sees right now.
 ```
 
 ```text
@@ -138,6 +166,12 @@ For the detailed happy path, see [DEPLOY.md](DEPLOY.md).
       "name": "Fixture Image",
       "type": "file",
       "path": "examples/fixture.jpg"
+    },
+    {
+      "id": "laptop-camera",
+      "name": "Laptop Camera",
+      "type": "macos_camera",
+      "device_name": "FaceTime HD Camera"
     }
   ]
 }

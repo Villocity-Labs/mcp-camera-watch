@@ -18,6 +18,12 @@
       "name": "Fixture Image",
       "type": "file",
       "path": "examples/fixture.jpg"
+    },
+    {
+      "id": "laptop-camera",
+      "name": "Laptop Camera",
+      "type": "macos_camera",
+      "device_name": "FaceTime HD Camera"
     }
   ]
 }
