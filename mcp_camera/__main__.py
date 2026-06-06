@@ -15,6 +15,9 @@ def main() -> int:
     parser.add_argument("--config", default="cameras.json", help="Path to camera config JSON.")
     parser.add_argument("--init-config", action="store_true", help="Create an example config and exit.")
     parser.add_argument("--print-clawbot-config", action="store_true", help="Print a Clawbot/OpenClaw MCP server entry.")
+    parser.add_argument("--web", action="store_true", help="Run the local browser testing UI.")
+    parser.add_argument("--port", type=int, default=8765, help="Port for --web. Default: 8765.")
+    parser.add_argument("--no-open", action="store_true", help="Do not open a browser when starting --web.")
     parser.add_argument("--version", action="store_true", help="Print version metadata and exit.")
     args = parser.parse_args()
 
@@ -39,7 +42,14 @@ def main() -> int:
             file=sys.stderr,
         )
 
-    CameraMcpServer(load_config(config_path)).run()
+    config = load_config(config_path)
+    if args.web:
+        from .web import run_web_ui
+
+        run_web_ui(config, port=args.port, open_browser=not args.no_open)
+        return 0
+
+    CameraMcpServer(config).run()
     return 0
 
 

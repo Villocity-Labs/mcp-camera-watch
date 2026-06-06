@@ -20,3 +20,6 @@ mcp-camera-watch = "mcp_camera.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+"mcp_camera.web_assets" = ["*.html", "*.css", "*.js"]

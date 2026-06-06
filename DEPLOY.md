@@ -4,6 +4,16 @@ This guide assumes you have Clawbot/OpenClaw installed and want it to launch MCP
 
 MCP Camera Watch was built by Steve Villari and Villocity Labs.
 
+## Local Browser Test
+
+Before registering with OpenClaw, a tester can exercise the same camera capture and OpenAI vision evaluator through a local browser UI:
+
+```bash
+scripts/start_ui.sh
+```
+
+Choose a configured camera, capture a frame, optionally enter an OpenAI API key, and send a custom request about the image. An entered key stays only in the open browser tab and is not saved by MCP Camera Watch. The UI listens only on `127.0.0.1`.
+
 ## Happy Path: One Command
 
 Start with a running OpenClaw/Clawbot gateway, then run this from the repository root:

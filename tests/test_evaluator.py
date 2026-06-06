@@ -18,6 +18,7 @@ class FakeOpenAIEvaluator(OpenAIEvaluator):
         object.__setattr__(self, "response_text", response_text)
 
     def call_responses_api(self, *, api_key: str, frame_path: str, prompt: str, max_output_tokens: int) -> str:
+        object.__setattr__(self, "last_api_key", api_key)
         return self.response_text
 
 
@@ -56,3 +57,13 @@ class EvaluatorTests(TestCase):
 
         self.assertIn("OPENAI_API_KEY is not set", response["description"])
         self.assertEqual(response["provider"], "openai")
+
+    def test_openai_evaluator_accepts_request_api_key(self) -> None:
+        evaluator = FakeOpenAIEvaluator("Visible blue filament.")
+        object.__setattr__(evaluator, "api_key", "request-key")
+
+        with patch.dict("os.environ", {}, clear=True):
+            response = evaluator.describe(frame_path="frame.jpg", prompt="What colors are visible?", detail="brief")
+
+        self.assertEqual(response["description"], "Visible blue filament.")
+        self.assertEqual(evaluator.last_api_key, "request-key")

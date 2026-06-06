@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MCP Camera Watch</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Villocity Labs</p>
+        <h1>MCP Camera Watch</h1>
+      </div>
+      <div class="connection-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        Local test console
+      </div>
+    </header>
+
+    <main>
+      <section class="workspace">
+        <div class="camera-column">
+          <div class="section-bar">
+            <div>
+              <p class="section-label">Camera</p>
+              <select id="camera-select" aria-label="Camera"></select>
+            </div>
+            <button id="capture-button" class="secondary-button" type="button">Capture frame</button>
+          </div>
+
+          <div class="camera-view">
+            <img id="camera-image" alt="Latest captured camera frame" hidden>
+            <div id="camera-empty" class="empty-state">
+              <span class="viewfinder" aria-hidden="true"></span>
+              <strong>Ready for a frame</strong>
+              <span>Select a camera and capture.</span>
+            </div>
+            <div id="capture-time" class="capture-time" hidden></div>
+          </div>
+
+          <section class="response-section" aria-live="polite">
+            <div class="response-header">
+              <div>
+                <p class="section-label">OpenAI response</p>
+                <h2 id="response-title">No request sent</h2>
+              </div>
+              <span id="model-used" class="model-used"></span>
+            </div>
+            <div id="response-output" class="response-output">The response will appear here.</div>
+          </section>
+        </div>
+
+        <form id="prompt-form" class="control-panel">
+          <div class="panel-heading">
+            <p class="section-label">Vision request</p>
+            <h2>Ask about this frame</h2>
+          </div>
+
+          <label for="api-key">OpenAI API key</label>
+          <input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Uses OPENAI_API_KEY when blank">
+          <p class="field-note">Kept only in this browser tab. Never saved by MCP Camera Watch.</p>
+
+          <label for="model">Model</label>
+          <input id="model" type="text" spellcheck="false" value="gpt-4.1-mini">
+
+          <label for="detail">Response detail</label>
+          <select id="detail">
+            <option value="brief">Brief</option>
+            <option value="normal" selected>Normal</option>
+            <option value="detailed">Detailed</option>
+          </select>
+
+          <label for="prompt">Custom request</label>
+          <textarea id="prompt" rows="7">Describe what this camera sees right now. Mention visible colors and anything that may need attention.</textarea>
+
+          <button id="ask-button" class="primary-button" type="submit">Capture and ask OpenAI</button>
+          <p id="request-status" class="request-status">Ready</p>
+        </form>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

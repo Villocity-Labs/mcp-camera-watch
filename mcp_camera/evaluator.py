@@ -55,9 +55,10 @@ class OpenAIEvaluator:
     base_url: str
     image_detail: str
     timeout_seconds: int
+    api_key: str | None = None
 
     def describe(self, *, frame_path: str, prompt: str, detail: str) -> JsonObject:
-        api_key = os.environ.get(self.api_key_env)
+        api_key = self.api_key or os.environ.get(self.api_key_env)
         if is_missing_api_key(api_key):
             return self.missing_api_key(frame_path, prompt=prompt, detail=detail)
 
@@ -87,7 +88,7 @@ class OpenAIEvaluator:
         }
 
     def evaluate(self, *, instruction: str, frame_path: str, threshold: float) -> JsonObject:
-        api_key = os.environ.get(self.api_key_env)
+        api_key = self.api_key or os.environ.get(self.api_key_env)
         if is_missing_api_key(api_key):
             response = self.missing_api_key(frame_path, prompt=instruction, detail="evaluation")
             return {
@@ -182,7 +183,7 @@ class OpenAIEvaluator:
         return {
             "description": (
                 f"OpenAI vision evaluator is configured, but {self.api_key_env} is not set. "
-                "Set that environment variable, restart OpenClaw, and try again."
+                "Provide an API key and try again."
             ),
             "provider": "openai",
             "model": self.model,

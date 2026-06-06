@@ -78,6 +78,32 @@ Edit the generated `cameras.json` file with your camera source, then run:
 scripts/smoke_mcp.sh
 ```
 
+## Local Testing UI
+
+Open the local camera testing UI with:
+
+```bash
+scripts/start_ui.sh
+```
+
+The browser UI lets a tester:
+
+- Choose any camera from `cameras.json`.
+- Capture and preview a live frame.
+- Enter an OpenAI API key without saving it to disk.
+- Select the OpenAI model and response detail.
+- Send a custom request about what the camera sees.
+
+The UI binds only to `127.0.0.1`. An entered key stays only in the open browser tab. Leave the field blank to use `OPENAI_API_KEY` from the process environment.
+
+For example, select `laptop-camera`, enter:
+
+```text
+What colors are visible, and is anything unusual happening in this frame?
+```
+
+Then press **Capture and ask OpenAI**.
+
 On macOS, `scripts/install_local.sh` also builds the native laptop-camera capture helper. Add a camera like this to `cameras.json`:
 
 ```json
