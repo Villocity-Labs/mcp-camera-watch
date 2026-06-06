@@ -3,8 +3,10 @@ const captureButton = document.querySelector("#capture-button");
 const promptForm = document.querySelector("#prompt-form");
 const askButton = document.querySelector("#ask-button");
 const cameraImage = document.querySelector("#camera-image");
+const cameraLoading = document.querySelector("#camera-loading");
 const cameraEmpty = document.querySelector("#camera-empty");
 const captureTime = document.querySelector("#capture-time");
+const enhancePreview = document.querySelector("#enhance-preview");
 const apiKeyInput = document.querySelector("#api-key");
 const modelInput = document.querySelector("#model");
 const detailSelect = document.querySelector("#detail");
@@ -33,6 +35,7 @@ async function api(path, body) {
 function setBusy(busy, status) {
   captureButton.disabled = busy;
   askButton.disabled = busy;
+  cameraLoading.hidden = !busy;
   requestStatus.classList.remove("error");
   requestStatus.textContent = status;
 }
@@ -44,11 +47,16 @@ function showError(error) {
 
 function showFrame(payload) {
   cameraImage.src = payload.frame_data_url;
+  cameraImage.classList.toggle("enhanced", enhancePreview.checked);
   cameraImage.hidden = false;
   cameraEmpty.hidden = true;
   captureTime.textContent = new Date(payload.captured_at || payload.observed_at).toLocaleString();
   captureTime.hidden = false;
 }
+
+enhancePreview.addEventListener("change", () => {
+  cameraImage.classList.toggle("enhanced", enhancePreview.checked);
+});
 
 async function loadCameras() {
   try {
@@ -90,10 +98,12 @@ promptForm.addEventListener("submit", async (event) => {
   responseTitle.textContent = "Request in progress";
   responseOutput.textContent = "";
   modelUsed.textContent = "";
+  const apiKey = apiKeyInput.value;
+  apiKeyInput.value = "";
   try {
     const payload = await api("/api/describe", {
       camera_id: cameraSelect.value,
-      api_key: apiKeyInput.value,
+      api_key: apiKey,
       model: modelInput.value,
       detail: detailSelect.value,
       prompt: promptInput.value,

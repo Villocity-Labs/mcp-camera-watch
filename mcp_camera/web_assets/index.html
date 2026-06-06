@@ -26,11 +26,21 @@
               <p class="section-label">Camera</p>
               <select id="camera-select" aria-label="Camera"></select>
             </div>
-            <button id="capture-button" class="secondary-button" type="button">Capture frame</button>
+            <div class="camera-actions">
+              <label class="preview-toggle">
+                <input id="enhance-preview" type="checkbox" checked>
+                Brighten preview
+              </label>
+              <button id="capture-button" class="secondary-button" type="button">Capture frame</button>
+            </div>
           </div>
 
           <div class="camera-view">
             <img id="camera-image" alt="Latest captured camera frame" hidden>
+            <div id="camera-loading" class="camera-loading" hidden>
+              <span class="loading-ring" aria-hidden="true"></span>
+              <strong>Capturing camera frame</strong>
+            </div>
             <div id="camera-empty" class="empty-state">
               <span class="viewfinder" aria-hidden="true"></span>
               <strong>Ready for a frame</strong>

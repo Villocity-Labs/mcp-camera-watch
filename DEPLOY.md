@@ -12,7 +12,7 @@ Before registering with OpenClaw, a tester can exercise the same camera capture 
 scripts/start_ui.sh
 ```
 
-Choose a configured camera, capture a frame, optionally enter an OpenAI API key, and send a custom request about the image. An entered key stays only in the open browser tab and is not saved by MCP Camera Watch. The UI listens only on `127.0.0.1`.
+Choose a configured camera, capture a frame, optionally brighten the preview, enter an OpenAI API key, and send a custom request about the image. Preview brightening does not alter the image sent to OpenAI. An entered key stays only in the open browser tab, is cleared after submission, and is not saved by MCP Camera Watch. The UI listens only on `127.0.0.1`.
 
 ## Happy Path: One Command
 

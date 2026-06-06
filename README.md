@@ -90,11 +90,12 @@ The browser UI lets a tester:
 
 - Choose any camera from `cameras.json`.
 - Capture and preview a live frame.
+- Brighten a dark preview without changing the image sent to OpenAI.
 - Enter an OpenAI API key without saving it to disk.
 - Select the OpenAI model and response detail.
 - Send a custom request about what the camera sees.
 
-The UI binds only to `127.0.0.1`. An entered key stays only in the open browser tab. Leave the field blank to use `OPENAI_API_KEY` from the process environment.
+The UI binds only to `127.0.0.1`. An entered key stays only in the open browser tab and is cleared immediately after submission. Leave the field blank to use `OPENAI_API_KEY` from the process environment.
 
 For example, select `laptop-camera`, enter:
 
