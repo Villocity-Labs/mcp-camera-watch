@@ -1,5 +1,7 @@
 # MCP Camera Watch
 
+[![CI](https://github.com/Villocity-Labs/mcp-camera-watch/actions/workflows/ci.yml/badge.svg)](https://github.com/Villocity-Labs/mcp-camera-watch/actions/workflows/ci.yml)
+
 A local-first MCP companion service for camera-based monitoring and true/false visual condition alerts.
 
 Built as a companion project for MCP Printer by Steve Villari and Villocity Labs.
@@ -220,3 +222,5 @@ Planned printer workflow:
 ## Safety
 
 Camera monitoring should assist, not replace supervision. Default behavior should be alert-and-ask, not automatic machine intervention.
+
+API keys, local camera configuration, generated OpenClaw configuration, and captured frames must remain private. See [SECURITY.md](SECURITY.md) for the project security and camera-privacy guidance.
